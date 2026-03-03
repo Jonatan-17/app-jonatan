@@ -850,11 +850,15 @@ body {
 .modal-title {
     font-size: 1.8rem;
     font-weight: 800;
+    /* El gradiente de fondo */
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    /* Recorta el fondo para que solo se vea en el texto */
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 15px;
+    background-clip: text;
+    /* IMPORTANTE: Hace el texto transparente para mostrar el fondo */
+    color: transparent;
 }
+
 .modal-text {
     color: var(--text-muted);
     margin-bottom: 25px;
