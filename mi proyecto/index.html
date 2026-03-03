@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESILENCE - Jonatan David</title>
+<style>
+:root {
+    --primary: #8B5CF6;
+    --secondary: #10B981;
+    --accent: #F59E0B;
+    --danger: #EF4444;
+    --bg-dark: #0B0F19;
+    --bg-card: #151B2B;
+    --bg-light: #0F172A;
+    --text-light: #F8FAFC;
+    --text-dark: #F1F5F9;
+    --text-muted: #94A3B8;
+    --road-color: #334155;
+    --road-active: #8B5CF6;
+    --road-completed: #10B981;
+    --gradient-map: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    --gradient-card: linear-gradient(135deg, #4c1d95 0%, #1e293b 100%);
+    --glass: rgba(21, 27, 43, 0.7);
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+body {
+    background: var(--bg-light);
+    color: var(--text-light);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ==================== ONBOARDING ==================== */
+.onboarding-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #1e293b 0%, #0B0F19 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.6s ease;
+    overflow-y: auto;
+    padding: 20px;
+}
+.onboarding-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.onboarding-container {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 50px;
+    max-width: 700px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7);
+    max-height: 95vh;
+    overflow-y: auto;
+}
+
+/* TU FOTO - Contenedor */
+.onboarding-photo-container {
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto 25px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.4);
+    border: 3px solid rgba(139, 92, 246, 0.5);
+    background: #1e293b;
+}
+.onboarding-photo {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s ease;
+}
+.onboarding-photo.error {
+    display: none;
+}
+.photo-fallback {
+    display: none;
+    width: 100%;
+    height: 280px;
+    background: linear-gradient(135deg, #8B5CF6, #10B981);
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: white;
+    font-weight: 700;
+}
+.photo-fallback.show {
+    display: flex;
+}
+.photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(16, 185, 129, 0.3) 100%);
+    pointer-events: none;
+}
+
+/* LOGO SVG MEJORADO */
+.onboarding-logo {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 25px;
+    filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.5));
+}
+.eye-pupil {
+    transform-origin: center;
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+.eye-iris {
+    transform-origin: center;
+    animation: rotate-slow 20s linear infinite;
+}
+.eye-lid {
+    transform-origin: top;
+    animation: blink 4s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.8)); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 15px rgba(139, 92, 246, 1)); transform: scale(1.05); }
+}
+@keyframes rotate-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+@keyframes blink {
+    0%, 48%, 52%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.1); }
+}
+
+.onboarding-title {
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #8B5CF6 0%, #F59E0B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+    letter-spacing: 3px;
+}
+.onboarding-subtitle {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    margin-bottom: 35px;
+    line-height: 1.7;
+}
+.user-info {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+.user-name-display {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+.user-bio-display {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+.user-bio-display strong {
+    color: var(--accent);
+}
+.btn-start {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border: none;
+    padding: 18px 40px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 10px;
+}
+.btn-start:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+}
+
+/* ==================== MAIN APP ==================== */
+.app-container {
+    display: none;
+    min-height: 100vh;
+}
+.app-container.active {
+    display: block;
+    animation: fadeIn 0.6s ease;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.app-header {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.header-logo {
+    width: 50px;
+    height: 50px;
+    filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5));
+}
+.header-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.header-search {
+    flex: 1;
+    max-width: 600px;
+    margin: 0 30px;
+    position: relative;
+}
+.search-input {
+    width: 100%;
+    padding: 15px 25px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+.search-input:focus {
+    outline: none;
+    background: rgba(0, 0, 0, 0.5);
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.user-profile:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+.map-wrapper {
+    display: grid;
+    grid-template-columns: 350px 1fr 350px;
+    gap: 0;
+    min-height: calc(100vh - 80px);
+}
+.sidebar-left {
+    background: var(--bg-card);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    padding: 20px;
+}
+.sidebar-section {
+    margin-bottom: 30px;
+}
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-light);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.section-icon {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+}
+.category-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.category-tab {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.category-tab:hover,
+.category-tab.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border-color: transparent;
+}
+.goal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.goal-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 18px;
+    border-left: 4px solid var(--primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.goal-card:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+.goal-card.status-pending { border-left-color: var(--accent); }
+.goal-card.status-active { border-left-color: var(--primary); }
+.goal-card.status-completed { border-left-color: var(--secondary); }
+.goal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+.goal-icon {
+    font-size: 1.5rem;
+}
+.goal-title {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+.goal-progress {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+.goal-progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+.goal-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.add-goal-form {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.input-field {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-light);
+}
+.input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+.btn-add-goal {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.btn-add-goal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+}
+.map-area {
+    background: var(--gradient-map);
+    position: relative;
+    overflow: hidden;
+}
+.map-canvas {
+    width: 100%;
+    height: 100%;
+    min-height: calc(100vh - 80px);
+    position: relative;
+    transition: transform 0.3s ease;
+    transform-origin: center center;
+}
+.road-network {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+.goal-node {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    /* POSICIÓN CENTRADA POR DEFECTO */
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+}
+.goal-node:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+    border-color: var(--primary);
+}
+.goal-node.status-pending {
+    border: 2px solid var(--accent);
+}
+.goal-node.status-active {
+    border: 2px solid var(--primary);
+    animation: pulse 2s infinite;
+}
+.goal-node.status-completed {
+    border: 2px solid var(--secondary);
+}
+/* CLASE PARA SELECCIÓN - OPTIMIZADA */
+.goal-node.selected {
+    transform: translate(-50%, -50%) scale(1.25) !important;
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.5), 0 8px 30px rgba(139, 92, 246, 0.6) !important;
+    z-index: 15 !important;
+}
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+    50% { box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
+}
+.goal-node-icon {
+    font-size: 2rem;
+}
+.goal-node-label {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    color: var(--text-light);
+}
+.start-point {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 10px rgba(139, 92, 246, 0.2), 0 10px 40px rgba(0, 0, 0, 0.5);
+    z-index: 20;
+    border: 2px solid rgba(255,255,255,0.2);
+    /* CENTRADO EXACTO */
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+.start-point-icon {
+    font-size: 3rem;
+}
+.map-controls {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 50;
+}
+.map-control-btn {
+    width: 50px;
+    height: 50px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+.map-control-btn:hover {
+    transform: scale(1.1);
+    background: var(--primary);
+    border-color: var(--primary);
+}
+.sidebar-right {
+    background: var(--bg-card);
+    border-left: 1px solid var(--border-color);
+    overflow-y: auto;
+    padding: 20px;
+}
+.goal-detail {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+.detail-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.detail-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+.detail-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+.detail-category {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+.detail-description {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    white-space: pre-line;
+}
+
+/* GUÍA ESTRATÉGICA */
+.strategy-guide {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+.strategy-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.strategy-tips {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.strategy-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+}
+.strategy-tip::before {
+    content: '💡';
+    font-size: 1rem;
+}
+
+.progress-steps {
+    margin-bottom: 20px;
+}
+.progress-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid transparent;
+}
+.progress-step:hover {
+    border-color: var(--border-color);
+}
+.step-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: var(--text-muted);
+}
+.step-indicator.completed {
+    background: var(--secondary);
+    color: white;
+}
+.step-indicator.active {
+    background: var(--primary);
+    color: white;
+}
+.step-content {
+    flex: 1;
+}
+.step-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    color: var(--text-light);
+}
+.step-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.btn-action {
+    padding: 14px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+}
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.stats-card {
+    background: linear-gradient(135deg, #4c1d95 0%, #1e293b 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 25px;
+    color: white;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.stats-percentage {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+}
+.stat-box {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: block;
+}
+.stat-label {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+.inspiration-card {
+    background: linear-gradient(135deg, #7c2d12 0%, #431407 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 25px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.inspiration-quote {
+    font-size: 1.1rem;
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+.inspiration-author {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    color: var(--accent);
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+.modal.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+.modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    animation: popIn 0.5s ease;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.modal-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 15px;
+}
+.modal-text {
+    color: var(--text-muted);
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+.btn-close {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1rem;
+}
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    z-index: 2001;
+    animation: fall 3s linear forwards;
+}
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+@media (max-width: 1200px) {
+    .map-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .sidebar-left,
+    .sidebar-right {
+        display: none;
+    }
+}
+@media (max-width: 768px) {
+    .app-header {
+        padding: 15px 20px;
+    }
+    .header-title {
+        font-size: 1.4rem;
+    }
+    .header-search {
+        display: none;
+    }
+    .onboarding-container {
+        padding: 30px 20px;
+    }
+    .onboarding-title {
+        font-size: 2rem;
+    }
+    .goal-node {
+        width: 60px;
+        height: 60px;
+    }
+    .goal-node-icon {
+        font-size: 1.5rem;
+    }
+    .start-point {
+        width: 80px;
+        height: 80px;
+    }
+}
+</style>
+</head>
+<body>
+<!-- ==================== ONBOARDING ==================== -->
+<div class="onboarding-screen" id="onboardingScreen">
+    <div class="onboarding-container">
+        <!-- TU FOTO -->
+        <div class="onboarding-photo-container">
+            <img src="yo.jpg" alt="Jonatan David" class="onboarding-photo" id="userPhoto" onerror="this.classList.add('error'); document.getElementById('photoFallback').classList.add('show')">
+            <div class="photo-fallback" id="photoFallback">JD</div>
+            <div class="photo-overlay"></div>
+        </div>
+        
+        <!-- LOGO SVG MEJORADO -->
+        <svg class="onboarding-logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="irisGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#8B5CF6"/>
+                    <stop offset="50%" style="stop-color:#A78BFA"/>
+                    <stop offset="100%" style="stop-color:#F59E0B"/>
+                </linearGradient>
+                <linearGradient id="pupilGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#0B0F19"/>
+                    <stop offset="100%" style="stop-color:#1e1b4b"/>
+                </linearGradient>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Outer Eye Shape -->
+            <ellipse cx="100" cy="100" rx="90" ry="60" fill="none" stroke="url(#irisGrad)" stroke-width="2" opacity="0.6"/>
+            
+            <!-- Iris Ring -->
+            <circle class="eye-iris" cx="100" cy="100" r="45" fill="none" stroke="url(#irisGrad)" stroke-width="3" opacity="0.8"/>
+            
+            <!-- Decorative Rings -->
+            <circle cx="100" cy="100" r="35" fill="none" stroke="url(#irisGrad)" stroke-width="1" opacity="0.4"/>
+            <circle cx="100" cy="100" r="25" fill="none" stroke="url(#irisGrad)" stroke-width="1" opacity="0.3"/>
+            
+            <!-- Pupil -->
+            <circle class="eye-pupil" cx="100" cy="100" r="18" fill="url(#pupilGrad)" stroke="url(#irisGrad)" stroke-width="2" filter="url(#glow)"/>
+            <circle cx="100" cy="100" r="8" fill="url(#irisGrad)"/>
+            
+            <!-- Light Reflection -->
+            <circle cx="112" cy="92" r="5" fill="white" opacity="0.9"/>
+            <circle cx="105" cy="95" r="3" fill="white" opacity="0.6"/>
+            
+            <!-- Eye Lines/Rays -->
+            <g stroke="url(#irisGrad)" stroke-width="2" stroke-linecap="round" opacity="0.5">
+                <line x1="100" y1="40" x2="100" y2="55"/>
+                <line x1="100" y1="145" x2="100" y2="160"/>
+                <line x1="40" y1="100" x2="55" y2="100"/>
+                <line x1="145" y1="100" x2="160" y2="100"/>
+                <line x1="55" y1="55" x2="65" y2="65"/>
+                <line x1="145" y1="55" x2="135" y2="65"/>
+                <line x1="55" y1="145" x2="65" y2="135"/>
+                <line x1="145" y1="145" x2="135" y2="135"/>
+            </g>
+        </svg>
+        
+        <h1 class="onboarding-title">RESILENCE</h1>
+        <p class="onboarding-subtitle">
+            🗺️ Navega tu destino como un mapa interactivo<br>
+            Cada meta es un destino, cada decisión un camino
+        </p>
+        
+        <!-- User Info Display -->
+        <div class="user-info">
+            <div class="user-name-display" id="displayName">👤 Jonatan David</div>
+            <div class="user-bio-display">
+                <strong>Mi Historia:</strong><br>
+                No me ha tocado fácil, la vida me ha puesto desafíos que parecían imposibles de superar.
+                He enfrentado momentos difíciles, obstáculos que me hicieron cuestionar si podría continuar.
+                Pero aquí estoy, <span style="color: var(--secondary); font-weight: 700;">avanzando</span>,
+                <span style="color: var(--primary); font-weight: 700;">resistiendo</span> y
+                <span style="color: var(--accent); font-weight: 700;">construyendo</span> mi propio camino.
+                Cada paso, por pequeño que sea, me acerca a quien quiero ser.
+                Esta es mi mapa, mi viaje, mi transformación.
+                <strong>🔥 La resiliencia </strong>
+            </div>
+        </div>
+        
+        <button class="btn-start" onclick="startJourney()">
+            🚀 Comenzar Mi Viaje
+        </button>
+    </div>
+</div>
+
+<!-- ==================== MAIN APP ==================== -->
+<div class="app-container" id="appContainer">
+    <header class="app-header">
+        <div class="header-brand">
+            <svg class="header-logo" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="25" cy="25" rx="23" ry="16" fill="none" stroke="#8B5CF6" stroke-width="2"/>
+                <circle cx="25" cy="25" r="10" fill="none" stroke="#8B5CF6" stroke-width="1.5"/>
+                <circle cx="25" cy="25" r="5" fill="#8B5CF6"/>
+                <circle cx="30" cy="22" r="2" fill="white" opacity="0.8"/>
+            </svg>
+            <span class="header-title">RESILENCE</span>
+        </div>
+        <div class="header-search">
+            <input type="text" class="search-input" placeholder="🔍 Buscar metas, caminos o destinos..." id="searchInput">
+        </div>
+        <div class="header-actions">
+            <div class="user-profile" onclick="editProfile()">
+                <div class="user-avatar" id="userAvatar">J</div>
+                <span id="headerUserName" style="color: var(--text-light);">Jonatan David</span>
+            </div>
+        </div>
+    </header>
+    
+    <div class="map-wrapper">
+        <aside class="sidebar-left" id="sidebarLeft">
+            <div class="sidebar-section">
+                <h2 class="section-title">
+                    <div class="section-icon">📍</div>
+                    Mis Destinos
+                </h2>
+                <div class="category-tabs" id="categoryTabs">
+                    <div class="category-tab active" data-category="all">Todos</div>
+                    <div class="category-tab" data-category="career">💼 Carrera</div>
+                    <div class="category-tab" data-category="education">📚 Educación</div>
+                    <div class="category-tab" data-category="finance">💰 Finanzas</div>
+                    <div class="category-tab" data-category="health">💪 Salud</div>
+                    <div class="category-tab" data-category="personal">🌱 Personal</div>
+                    <div class="category-tab" data-category="business">🚀 Negocios</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h2 class="section-title">
+                    <div class="section-icon">➕</div>
+                    Nuevo Destino
+                </h2>
+                <div class="add-goal-form">
+                    <input type="text" id="goalTitle" class="input-field" placeholder="🎯 Título de la meta">
+                    <select id="goalCategory" class="input-field">
+                        <option value="career">💼 Carrera Profesional</option>
+                        <option value="education">📚 Educación</option>
+                        <option value="finance">💰 Finanzas</option>
+                        <option value="health">💪 Salud y Fitness</option>
+                        <option value="personal">🌱 Desarrollo Personal</option>
+                        <option value="business">🚀 Emprendimiento</option>
+                    </select>
+                    <select id="goalPriority" class="input-field">
+                        <option value="high">🔴 Alta Prioridad</option>
+                        <option value="medium" selected>🟡 Media Prioridad</option>
+                        <option value="low">🟢 Baja Prioridad</option>
+                    </select>
+                    <textarea id="goalDescription" class="input-field" rows="3" placeholder="📝 Descripción..."></textarea>
+                    <button class="btn-add-goal" onclick="addGoal()">
+                        <span>📍</span> Agregar al Mapa
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h2 class="section-title">
+                    <div class="section-icon">📋</div>
+                    Lista de Metas
+                </h2>
+                <div class="goal-list" id="goalList"></div>
+            </div>
+        </aside>
+        
+        <main class="map-area">
+            <div class="map-canvas" id="mapCanvas">
+                <svg class="road-network" id="roadNetwork"></svg>
+                <div class="start-point" id="startPoint">
+                    <span class="start-point-icon">🏠</span>
+                </div>
+                <div id="goalNodes"></div>
+            </div>
+            <div class="map-controls">
+                <button class="map-control-btn" onclick="zoomIn()">+</button>
+                <button class="map-control-btn" onclick="zoomOut()">−</button>
+                <button class="map-control-btn" onclick="resetMap()">⟲</button>
+            </div>
+        </main>
+        
+        <aside class="sidebar-right" id="sidebarRight">
+            <div class="sidebar-section">
+                <h2 class="section-title">
+                    <div class="section-icon">📊</div>
+                    Tu Progreso
+                </h2>
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <span>Completado</span>
+                        <span class="stats-percentage" id="progressPercentage">0%</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-number" id="totalGoals">0</span>
+                            <span class="stat-label">Total</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number" id="completedGoals">0</span>
+                            <span class="stat-label">Hechas</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number" id="activeGoals">0</span>
+                            <span class="stat-label">Activas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section" id="goalDetailSection" style="display: none;">
+                <h2 class="section-title">
+                    <div class="section-icon">🎯</div>
+                    Detalles del Destino
+                </h2>
+                <div class="goal-detail" id="goalDetail"></div>
+                <div class="action-buttons">
+                    <button class="btn-action btn-primary" onclick="advanceGoal()">⬆️ Avanzar en este camino</button>
+                    <button class="btn-action btn-secondary" onclick="deleteGoal()">🗑️ Eliminar destino</button>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h2 class="section-title">
+                    <div class="section-icon">💡</div>
+                    Inspiración del Día
+                </h2>
+                <div class="inspiration-card">
+                    <p class="inspiration-quote" id="dailyQuote">"El éxito es la suma de pequeños esfuerzos repetidos día tras día."</p>
+                    <p class="inspiration-author">- Robert Collier</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<div class="modal" id="celebrationModal">
+    <div class="modal-content">
+        <div style="font-size: 5rem; margin-bottom: 20px; animation: bounce 1s infinite;">🎉</div>
+        <h2 class="modal-title">¡Felicidades!</h2>
+        <p class="modal-text" id="celebrationText">Has completado un destino más en tu mapa de vida.</p>
+        <button class="btn-close" onclick="closeCelebration()">Continuar Viaje</button>
+    </div>
+</div>
+
+<!-- Botón de Reset (para debug) -->
+<button onclick="resetApp()" style="position:fixed; bottom:10px; right:10px; background:#EF4444; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; z-index:9999; font-weight:700;">🔄 Reset</button>
+
+<script>
+// ==================== STATE ====================
+let userData = {
+    name: 'Jonatan David',
+    bio: 'No me ha tocado fácil, pero sigo avanzando...',
+    goals: [],
+    selectedGoal: null
+};
+let mapZoom = 1;
+let selectedGoalId = null;
+const START_POSITION = { x: 50, y: 50 }; // Punto central fijo
+
+// ==================== DEFAULT GOALS (CON GUÍAS ESTRATÉGICAS) ====================
+const defaultGoals = [
+    {
+        id: 1,
+        title: 'Graduarme de Campuslands',
+        category: 'education',
+        description: '📚 COMPLETA TU FORMACIÓN TÉCNICA\n\n🎯 Plan de Acción:\n✓ Asiste a TODAS las clases y mentorías\n✓ Completa cada módulo ANTES del deadline\n✓ Participa activamente en proyectos grupales\n✓ Construye un portafolio sólido con tus mejores 5 proyectos\n✓ Haz networking con compañeros e instructores\n✓ Practica coding DIARIO (mínimo 2 horas)\n✓ Repasa lo aprendido cada semana',
+        priority: 'high',
+        status: 'active',
+        progress: 40,
+        steps: [
+            { title: 'Completar módulos básicos (HTML, CSS, JS)', completed: true },
+            { title: 'Proyectos intermedios (React, Node)', completed: true },
+            { title: 'Proyecto final integrador', completed: false },
+            { title: 'Preparar portafolio y certificación', completed: false }
+        ],
+        icon: '🎓',
+        position: { x: 30, y: 30 },
+        tips: [
+            'Crea un horario de estudio fijo y cúmplelo como si fuera trabajo',
+            'No copies código, entiende la lógica detrás de cada línea',
+            'Únete a comunidades de Discord para resolver dudas rápido',
+            'Documenta TODO en GitHub desde el día 1'
+        ]
+    },
+    {
+        id: 2,
+        title: 'Programador de Alto Nivel',
+        category: 'career',
+        description: '💻 CONVÍERTETE EN UN DEV TOP TIER\n\n🎯 Plan de Acción:\n✓ Domina fundamentos sólidos (DSA, patrones de diseño)\n✓ Especialízate en un stack (Frontend, Backend, Full Stack)\n✓ Construye portafolio PREMIUM (5-10 proyectos)\n✓ Contribuye a proyectos open source en GitHub\n✓ Escribe artículos técnicos (Medium, Dev.to)\n✓ Prepara para entrevistas técnicas (LeetCode)',
+        priority: 'high',
+        status: 'pending',
+        progress: 20,
+        steps: [
+            { title: 'Dominar fundamentos avanzados', completed: true },
+            { title: 'Especialización técnica', completed: false },
+            { title: 'Portafolio premium (5+ proyectos)', completed: false },
+            { title: 'Entrevistas en top companies', completed: false }
+        ],
+        icon: '💻',
+        position: { x: 70, y: 25 },
+        tips: [
+            'Resuelve 1 problema de algoritmos diario en LeetCode',
+            'Lee código de otros desarrolladores senior en GitHub',
+            'Enseña lo que aprendes (blog o videos) para consolidar conocimiento',
+            'Networking > Aplicaciones frías en LinkedIn'
+        ]
+    },
+    {
+        id: 3,
+        title: 'Trabajo Remoto',
+        category: 'career',
+        description: '🏡 LOGRA LIBERTAD GEOGRÁFICA\n\n🎯 Plan de Acción:\n✓ Desarrolla habilidades remotas (comunicación async)\n✓ Portafolio online impecable (GitHub, LinkedIn)\n✓ Crea perfiles en plataformas (Toptal, Upwork, Arc.dev)\n✓ Aplica a posiciones remote-first diariamente\n✓ Prepara home office setup profesional\n✓ Mejora tu inglés (requisito clave)',
+        priority: 'medium',
+        status: 'pending',
+        progress: 10,
+        steps: [
+            { title: 'Desarrollar habilidades remotas', completed: false },
+            { title: 'Portafolio y perfiles online', completed: false },
+            { title: 'Aplicar a 50+ posiciones', completed: false },
+            { title: 'Conseguir primera posición remota', completed: false }
+        ],
+        icon: '🏡',
+        position: { x: 75, y: 50 },
+        tips: [
+            'Configura un espacio de trabajo ergonómico y profesional',
+            'Domina herramientas como Slack, Notion, Jira y Zoom',
+            'Ten un internet de respaldo (plan de datos móvil)',
+            'Comunica tu disponibilidad claramente en diferentes zonas horarias'
+        ]
+    },
+    {
+        id: 4,
+        title: 'Empresario',
+        category: 'business',
+        description: '🚀 CREA TU PROPIO IMPERIO\n\n🎯 Plan de Acción:\n✓ Identifica un problema REAL a resolver\n✓ Valida tu idea con mercado (encuestas, interviews)\n✓ Desarrolla MVP (Minimum Viable Product)\n✓ Busca tus primeros 100 usuarios/pagos\n✓ Itera basado en feedback constante\n✓ Escala gradualmente sin quemar cash',
+        priority: 'high',
+        status: 'pending',
+        progress: 15,
+        steps: [
+            { title: 'Idea de negocio validada', completed: true },
+            { title: 'Plan de negocios y MVP', completed: false },
+            { title: 'Primeros clientes/usuarios', completed: false },
+            { title: 'Lanzamiento oficial', completed: false }
+        ],
+        icon: '🚀',
+        position: { x: 50, y: 20 },
+        tips: [
+            'Habla con 50 clientes potenciales antes de construir nada',
+            'Lanza rápido, falla rápido, aprende rápido',
+            'Mantén costos fijos bajos al inicio',
+            'Enfócate en ventas desde el día 1, no solo en producto'
+        ]
+    },
+    {
+        id: 5,
+        title: 'Marca Multinacional',
+        category: 'business',
+        description: '🌍 ESCALA A NIVEL GLOBAL\n\n🎯 Plan de Acción:\n✓ Consolidar marca local/regional primero\n✓ Estudia mercados internacionales (USA, Europa, LatAm)\n✓ Adapta producto/servicio a cultura local\n✓ Partnerships estratégicos con empresas locales\n✓ Equipo remoto internacional\n✓ Legal y taxes en cada país',
+        priority: 'medium',
+        status: 'pending',
+        progress: 5,
+        steps: [
+            { title: 'Marca local sólida y rentable', completed: false },
+            { title: 'Expansión regional (2-3 países)', completed: false },
+            { title: 'Presencia internacional (5+ países)', completed: false },
+            { title: 'Operaciones multinacionales', completed: false }
+        ],
+        icon: '🌍',
+        position: { x: 40, y: 15 },
+        tips: [
+            'Investiga regulaciones locales antes de expandirte',
+            'Contrata talento local que conozca el mercado',
+            'Adapta tu marketing a cada cultura, no traduzcas literalmente',
+            'Considera zonas horarias para atención al cliente'
+        ]
+    },
+    {
+        id: 6,
+        title: 'Independizarme',
+        category: 'finance',
+        description: '🏠 VIVE EN TU PROPIO ESPACIO\n\n🎯 Plan de Acción:\n✓ Ahorra fondo de emergencia (3-6 meses de gastos)\n✓ Investiga zonas (seguridad, servicios, transporte)\n✓ Calcula budget (máx 30% de ingresos para alquiler)\n✓ Consigue trabajo estable o ingresos recurrentes\n✓ Busca roommates si es necesario al inicio\n✓ Firma de contrato y mudanza',
+        priority: 'high',
+        status: 'pending',
+        progress: 25,
+        steps: [
+            { title: 'Ahorro inicial ($2,000-3,000)', completed: true },
+            { title: 'Búsqueda de vivienda ideal', completed: false },
+            { title: 'Trámite de contrato y depósito', completed: false },
+            { title: 'Mudanza y establecimiento', completed: false }
+        ],
+        icon: '🏠',
+        position: { x: 25, y: 55 },
+        tips: [
+            'Visita el vecindario a diferentes horas del día',
+            'Lee todo el contrato antes de firmar (cláusulas de salida)',
+            'Considera costos ocultos (servicios, mantenimiento, seguros)',
+            'Ten un colchón financiero para imprevistos de mudanza'
+        ]
+    },
+    {
+        id: 7,
+        title: 'Mi Propia Casa',
+        category: 'finance',
+        description: '🏡 LA CASA DE TUS SUEÑOS\n\n🎯 Plan de Acción:\n✓ Define ubicación ideal (seguridad, servicios, plusvalía)\n✓ Calcula budget (máx 30% de ingresos para cuota)\n✓ Ahorra para inicial (20-30% del valor)\n✓ Mejora score crediticio (paga tarjetas a tiempo)\n✓ Compara opciones de crédito hipotecario (mínimo 3 bancos)\n✓ Visita 20+ propiedades',
+        priority: 'medium',
+        status: 'pending',
+        progress: 10,
+        steps: [
+            { title: 'Ahorro para inicial ($10,000+)', completed: false },
+            { title: 'Crédito hipotecario aprobado', completed: false },
+            { title: 'Búsqueda y selección', completed: false },
+            { title: 'Compra y mudanza', completed: false }
+        ],
+        icon: '🏡',
+        position: { x: 20, y: 70 },
+        tips: [
+            'No te cases con la primera propiedad que veas',
+            'Contrata un inspector antes de comprar',
+            'Considera el potencial de plusvalía de la zona',
+            'Negocia siempre, el precio publicado no es final'
+        ]
+    },
+    {
+        id: 8,
+        title: 'Mi Propio Carro',
+        category: 'finance',
+        description: '🚗 MOVILIDAD Y LIBERTAD\n\n🎯 Plan de Acción:\n✓ Define budget (máx 40% de ingresos mensuales)\n✓ Ahorra para inicial (20-30% del valor)\n✓ Investiga modelos (confiabilidad, consumo, seguro)\n✓ Compara opciones (nuevo vs seminuevo vs usado)\n✓ Calcula costos adicionales (seguro, gasolina, mantenimiento)\n✓ Test drive antes de comprar',
+        priority: 'medium',
+        status: 'pending',
+        progress: 15,
+        steps: [
+            { title: 'Ahorro para inicial ($3,000-5,000)', completed: false },
+            { title: 'Investigación de modelos y precios', completed: false },
+            { title: 'Aprobación de crédito o pago', completed: false },
+            { title: 'Compra y papeleo', completed: false }
+        ],
+        icon: '🚗',
+        position: { x: 30, y: 75 },
+        tips: [
+            'Seminuevos (2-3 años) ofrecen mejor valor que nuevos',
+            'Marcas japonesas suelen tener menor costo de mantenimiento',
+            'Revisa el historial del vehículo antes de comprar usado',
+            'Considera seguro y gasolina en tu presupuesto mensual'
+        ]
+    },
+    {
+        id: 9,
+        title: 'Aprender Inglés',
+        category: 'education',
+        description: '🗣️ DOMINA EL INGLÉS TÉCNICO\n\n🎯 Plan de Acción:\n✓ Estudia 1 hora DIARIA (sin excepciones)\n✓ Usa apps (Duolingo, Babbel, Anki)\n✓ Consume contenido en inglés (YouTube, podcasts, series)\n✓ Practica speaking con apps (HelloTalk, Tandem, Cambly)\n✓ Lee documentación técnica en inglés\n✓ Únete a comunidades tech en inglés',
+        priority: 'high',
+        status: 'active',
+        progress: 50,
+        steps: [
+            { title: 'Nivel básico (A1-A2)', completed: true },
+            { title: 'Nivel intermedio (B1)', completed: true },
+            { title: 'Nivel intermedio-alto (B2)', completed: false },
+            { title: 'Certificación o validación', completed: false }
+        ],
+        icon: '🗣️',
+        position: { x: 65, y: 35 },
+        tips: [
+            'Cambia el idioma de tu teléfono y computadora a inglés',
+            'Piensa en inglés, no traduzcas desde español',
+            'Habla solo aunque te sientas ridículo (práctica diaria)',
+            'Consume contenido tech en inglés (documentación, tutoriales)'
+        ]
+    },
+    {
+        id: 10,
+        title: 'Mejorar en el Gym',
+        category: 'health',
+        description: '💪 CONSTRUYE TU MEJOR VERSIÓN FÍSICA\n\n🎯 Plan de Acción:\n✓ Rutina 4-5 veces por semana (sé constante)\n✓ Alimentación balanceada (proteínas, carbs, grasas)\n✓ Descanso adecuado (7-8 horas de sueño)\n✓ Suplementación básica (proteína, creatina)\n✓ Seguimiento de progreso (fotos, medidas, peso)\n✓ Paciencia y consistencia',
+        priority: 'medium',
+        status: 'active',
+        progress: 35,
+        steps: [
+            { title: 'Establecer rutina constante', completed: true },
+            { title: 'Mejorar nutrición y hábitos', completed: false },
+            { title: 'Alcanzar meta de peso/músculo', completed: false },
+            { title: 'Mantenimiento y estilo de vida', completed: false }
+        ],
+        icon: '💪',
+        position: { x: 80, y: 60 },
+        tips: [
+            'La consistencia vence a la intensidad (mejor 30 min diarios que 3 horas una vez)',
+            'Duerme 7-8 horas, los músculos crecen al descansar',
+            'Come proteína en cada comida (1.6-2g por kg de peso)',
+            'Toma fotos semanales, el espejo miente, las fotos no'
+        ]
+    },
+    {
+        id: 11,
+        title: 'Mi Propia App',
+        category: 'business',
+        description: '📱 DESARROLLA UNA APP EXITOSA\n\n🎯 Plan de Acción:\n✓ Idea que resuelva problema REAL (valida primero)\n✓ Investiga competencia y mercado\n✓ Diseña UX/UI (Figma, prototipa antes de codear)\n✓ Desarrolla MVP (React Native, Flutter)\n✓ Lanza en App Store y Google Play\n✓ Marketing y ASO (App Store Optimization)',
+        priority: 'high',
+        status: 'pending',
+        progress: 20,
+        steps: [
+            { title: 'Idea validada y diseño', completed: true },
+            { title: 'Desarrollo del MVP', completed: false },
+            { title: 'Lanzamiento en stores', completed: false },
+            { title: '1,000+ usuarios activos', completed: false }
+        ],
+        icon: '📱',
+        position: { x: 60, y: 40 },
+        tips: [
+            'Valida con 100 usuarios antes de escribir código',
+            'Lanza en una plataforma primero (iOS o Android)',
+            'ASO es crucial: título, descripción y screenshots venden',
+            'Escucha feedback de usuarios y actualiza rápido'
+        ]
+    },
+    {
+        id: 12,
+        title: 'Mi Videojuego',
+        category: 'business',
+        description: '🎮 CREA TU SUEÑO GAMER\n\n🎯 Plan de Acción:\n✓ Define concepto y género (2D, 3D, mobile, PC)\n✓ Elige motor (Unity, Unreal, Godot)\n✓ Aprende game development (cursos, tutoriales)\n✓ Diseña niveles y mecánicas\n✓ Desarrolla prototype (jugable en 2-4 semanas)\n✓ Beta testing con comunidad',
+        priority: 'medium',
+        status: 'pending',
+        progress: 10,
+        steps: [
+            { title: 'Concepto y diseño del juego', completed: true },
+            { title: 'Desarrollo completo', completed: false },
+            { title: 'Testing y pulido', completed: false },
+            { title: 'Publicación y marketing', completed: false }
+        ],
+        icon: '🎮',
+        position: { x: 55, y: 30 },
+        tips: [
+            'Empieza PEQUEÑO (tu primer juego no será tu obra maestra)',
+            'Termina proyectos, no los abandones a mitad',
+            'Únete a game jams para practicar y hacer networking',
+            'Publica en itch.io primero para feedback gratuito'
+        ]
+    },
+    {
+        id: 13,
+        title: 'Dar Trabajo',
+        category: 'personal',
+        description: '🤝 GENERA OPORTUNIDADES PARA OTROS\n\n🎯 Plan de Acción:\n✓ Empresa establecida y rentable primero\n✓ Define roles necesarios\n✓ Crea procesos de reclutamiento\n✓ Ofrece salarios justos + beneficios\n✓ Capacitación y desarrollo del equipo\n✓ Cultura empresarial positiva',
+        priority: 'medium',
+        status: 'pending',
+        progress: 5,
+        steps: [
+            { title: 'Empresa establecida', completed: false },
+            { title: 'Primera contratación', completed: false },
+            { title: 'Equipo de 5-10 personas', completed: false },
+            { title: 'Cultura y crecimiento sostenido', completed: false }
+        ],
+        icon: '🤝',
+        position: { x: 45, y: 25 },
+        tips: [
+            'Contrata por actitud, entrena por habilidad',
+            'Paga bien desde el inicio (ahorra en rotación)',
+            'Crea un ambiente donde la gente quiera quedarse',
+            'Invierte en el crecimiento de tu equipo'
+        ]
+    },
+    {
+        id: 14,
+        title: 'Persona Exitosa',
+        category: 'personal',
+        description: '⭐ ALCANZA EL ÉXITO INTEGRAL\n\n🎯 Plan de Acción:\n✓ Define QUÉ es éxito para TI\n✓ Equilibrio vida-trabajo real\n✓ Salud física y mental prioritaria\n✓ Relaciones sólidas (familia, amigos)\n✓ Crecimiento continuo (leer, cursos)\n✓ Impacto positivo en comunidad\n✓ Gratitud y mindfulness',
+        priority: 'high',
+        status: 'active',
+        progress: 30,
+        steps: [
+            { title: 'Definir éxito personal y valores', completed: true },
+            { title: 'Hábitos diarios exitosos', completed: false },
+            { title: 'Impacto positivo medible', completed: false },
+            { title: 'Vivir en plenitud y gratitud', completed: false }
+        ],
+        icon: '⭐',
+        position: { x: 50, y: 50 },
+        tips: [
+            'El éxito es un viaje, no un destino final',
+            'Mide tu progreso contra ti mismo, no contra otros',
+            'La salud mental es tan importante como la física',
+            'Practica gratitud diaria (3 cosas cada mañana)'
+        ]
+    }
+];
+
+// ==================== QUOTES ====================
+const quotes = [
+    { text: "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", author: "Robert Collier" },
+    { text: "No importa lo lento que vayas, siempre y cuando no te detengas.", author: "Confucio" },
+    { text: "La única forma de hacer un gran trabajo es amar lo que haces.", author: "Steve Jobs" },
+    { text: "Cree que puedes y ya estarás a medio camino.", author: "Theodore Roosevelt" },
+    { text: "El futuro pertenece a quienes creen en la belleza de sus sueños.", author: "Eleanor Roosevelt" },
+    { text: "No cuentes los días, haz que los días cuenten.", author: "Muhammad Ali" },
+    { text: "Tu vida es tu mapa. Tú decides el destino.", author: "Resilience" },
+    { text: "Cada camino comienza con un primer paso.", author: "Lao Tse" }
+];
+
+// ==================== ONBOARDING ====================
+function startJourney() {
+    userData.goals = [...defaultGoals];
+    localStorage.setItem('resilienceData', JSON.stringify(userData));
+    document.getElementById('onboardingScreen').classList.add('hidden');
+    document.getElementById('appContainer').classList.add('active');
+    initializeApp();
+}
+
+// ==================== APP FUNCTIONS ====================
+function initializeApp() {
+    updateUserInfo();
+    renderGoalList();
+    renderMap();
+    renderStats();
+    setDailyQuote();
+    setupCategoryTabs();
+    setupSearch();
+}
+
+function updateUserInfo() {
+    document.getElementById('headerUserName').textContent = userData.name;
+    document.getElementById('userAvatar').textContent = userData.name.charAt(0).toUpperCase();
+    document.getElementById('displayName').textContent = '👤 ' + userData.name;
+}
+
+function setDailyQuote() {
+    const today = new Date().getDay();
+    const quote = quotes[today % quotes.length];
+    document.getElementById('dailyQuote').textContent = `"${quote.text}"`;
+    document.querySelector('.inspiration-author').textContent = `- ${quote.author}`;
+}
+
+function setupCategoryTabs() {
+    const tabs = document.querySelectorAll('.category-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            renderGoalList(tab.dataset.category);
+        });
+    });
+}
+
+function setupSearch() {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const goals = userData.goals.filter(g =>
+            g.title.toLowerCase().includes(term) ||
+            g.description.toLowerCase().includes(term)
+        );
+        renderGoalList('all', goals);
+    });
+}
+
+function renderGoalList(category = 'all', filteredGoals = null) {
+    const container = document.getElementById('goalList');
+    let goals = filteredGoals || userData.goals;
+    
+    if (category !== 'all' && !filteredGoals) {
+        goals = goals.filter(g => g.category === category);
+    }
+    
+    if (goals.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No hay metas en esta categoría</p>';
+        return;
+    }
+    
+    container.innerHTML = goals.map(goal => `
+        <div class="goal-card status-${goal.status}" onclick="selectGoal(${goal.id})">
+            <div class="goal-header">
+                <span class="goal-icon">${goal.icon}</span>
+                <span class="goal-title">${goal.title}</span>
+            </div>
+            <div class="goal-progress">
+                <div class="goal-progress-fill" style="width: ${goal.progress}%"></div>
+            </div>
+            <div class="goal-meta">
+                <span>${goal.progress}% completado</span>
+                <span>${getCategoryEmoji(goal.category)} ${getCategoryName(goal.category)}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getCategoryEmoji(category) {
+    const emojis = {
+        career: '💼',
+        education: '📚',
+        finance: '💰',
+        health: '💪',
+        personal: '🌱',
+        business: '🚀'
+    };
+    return emojis[category] || '📍';
+}
+
+function getCategoryName(category) {
+    const names = {
+        career: 'Carrera',
+        education: 'Educación',
+        finance: 'Finanzas',
+        health: 'Salud',
+        personal: 'Personal',
+        business: 'Negocios'
+    };
+    return names[category] || category;
+}
+
+// ==================== RENDER MAP OPTIMIZADO ====================
+function renderMap() {
+    const nodesContainer = document.getElementById('goalNodes');
+    const roadNetwork = document.getElementById('roadNetwork');
+    
+    // Render nodes
+    nodesContainer.innerHTML = userData.goals.map(goal => {
+        const statusClass = goal.status === 'completed' ? 'status-completed' :
+                           goal.status === 'active' ? 'status-active' : 'status-pending';
+        const selectedClass = goal.id === selectedGoalId ? 'selected' : '';
+        return `
+            <div class="goal-node ${statusClass} ${selectedClass}"
+                style="left: ${goal.position.x}%; top: ${goal.position.y}%;"
+                onclick="selectGoal(${goal.id})"
+                data-goal-id="${goal.id}">
+                <span class="goal-node-icon">${goal.icon}</span>
+                <span class="goal-node-label">${goal.title}</span>
+            </div>
+        `;
+    }).join('');
+    
+    // Render roads - OPTIMIZADO
+    let roadsSVG = '';
+    userData.goals.forEach((goal) => {
+        const strokeColor = getRoadColor(goal.status);
+        const strokeWidth = goal.id === selectedGoalId ? 4 : 2;
+        const opacity = goal.id === selectedGoalId ? 1 : 0.6;
+        roadsSVG += `
+            <line x1="${START_POSITION.x}%" y1="${START_POSITION.y}%"
+                  x2="${goal.position.x}%" y2="${goal.position.y}%"
+                  style="stroke: ${strokeColor}; stroke-width: ${strokeWidth}; opacity: ${opacity}; transition: all 0.3s ease;"/>
+        `;
+    });
+    
+    roadNetwork.innerHTML = roadsSVG;
+}
+
+function getRoadColor(status) {
+    if (status === 'completed') return '#10B981';
+    if (status === 'active') return '#8B5CF6';
+    return '#334155';
+}
+
+// ==================== SELECT GOAL OPTIMIZADO ====================
+function selectGoal(goalId) {
+    selectedGoalId = goalId;
+    const goal = userData.goals.find(g => g.id === goalId);
+    userData.selectedGoal = goal;
+    
+    document.getElementById('goalDetailSection').style.display = 'block';
+    
+    // Build tips HTML
+    let tipsHTML = '';
+    if (goal.tips && goal.tips.length > 0) {
+        tipsHTML = `
+            <div class="strategy-guide">
+                <div class="strategy-title">
+                    <span>🎯</span> Guía Estratégica
+                </div>
+                <div class="strategy-tips">
+                    ${goal.tips.map(tip => `
+                        <div class="strategy-tip">${tip}</div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    const detailHTML = `
+        <div class="detail-header">
+            <div class="detail-icon">${goal.icon}</div>
+            <div>
+                <div class="detail-title">${goal.title}</div>
+                <div class="detail-category">${getCategoryEmoji(goal.category)} ${getCategoryName(goal.category)} • ${getPriorityLabel(goal.priority)}</div>
+            </div>
+        </div>
+        <p class="detail-description">${goal.description}</p>
+        ${tipsHTML}
+        <div class="progress-steps">
+            ${goal.steps.map((step, index) => `
+                <div class="progress-step">
+                    <div class="step-indicator ${step.completed ? 'completed' : index === getActiveStepIndex(goal) ? 'active' : ''}">
+                        ${step.completed ? '✓' : index + 1}
+                    </div>
+                    <div class="step-content">
+                        <div class="step-title">${step.title}</div>
+                        <div class="step-desc">${step.completed ? 'Completado' : 'Pendiente'}</div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        <div class="goal-progress" style="height: 10px; margin: 20px 0;">
+            <div class="goal-progress-fill" style="width: ${goal.progress}%"></div>
+        </div>
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">${goal.progress}% completado</p>
+    `;
+    
+    document.getElementById('goalDetail').innerHTML = detailHTML;
+    
+    // OPTIMIZADO: Usar clases CSS en lugar de inline styles
+    requestAnimationFrame(() => {
+        document.querySelectorAll('.goal-node').forEach(node => {
+            node.classList.remove('selected');
+            if (node.dataset.goalId == goalId) {
+                node.classList.add('selected');
+            }
+        });
+        
+        // Re-render roads para actualizar highlight
+        renderMap();
+    });
+}
+
+function getActiveStepIndex(goal) {
+    return goal.steps.findIndex(s => !s.completed);
+}
+
+function getPriorityLabel(priority) {
+    const labels = {
+        high: '🔴 Alta Prioridad',
+        medium: '🟡 Media Prioridad',
+        low: '🟢 Baja Prioridad'
+    };
+    return labels[priority] || priority;
+}
+
+function addGoal() {
+    const title = document.getElementById('goalTitle').value.trim();
+    const category = document.getElementById('goalCategory').value;
+    const priority = document.getElementById('goalPriority').value;
+    const description = document.getElementById('goalDescription').value.trim();
+    
+    if (!title) {
+        alert('Por favor ingresa un título para esta meta');
+        return;
+    }
+    
+    const icons = {
+        career: '💼',
+        education: '🎓',
+        finance: '💰',
+        health: '💪',
+        personal: '🌱',
+        business: '🚀'
+    };
+    
+    const newGoal = {
+        id: Date.now(),
+        title,
+        category,
+        description: description || 'Sin descripción',
+        priority,
+        status: 'pending',
+        progress: 0,
+        steps: [
+            { title: 'Investigación inicial', completed: false },
+            { title: 'Plan de acción', completed: false },
+            { title: 'Ejecución', completed: false },
+            { title: 'Completado', completed: false }
+        ],
+        icon: icons[category] || '📍',
+        position: {
+            x: 30 + Math.random() * 40,
+            y: 30 + Math.random() * 40
+        },
+        tips: [
+            'Define pasos pequeños y alcanzables',
+            'Revisa tu progreso semanalmente',
+            'Celebra cada pequeño logro',
+            'No te rindas ante los obstáculos'
+        ]
+    };
+    
+    userData.goals.push(newGoal);
+    saveData();
+    renderGoalList();
+    renderMap();
+    renderStats();
+    
+    document.getElementById('goalTitle').value = '';
+    document.getElementById('goalDescription').value = '';
+    
+    showCelebration('¡Nuevo destino agregado a tu mapa!');
+}
+
+function advanceGoal() {
+    if (!userData.selectedGoal) return;
+    
+    const goal = userData.goals.find(g => g.id === userData.selectedGoal.id);
+    const activeStepIndex = getActiveStepIndex(goal);
+    
+    if (activeStepIndex >= 0 && activeStepIndex < goal.steps.length) {
+        goal.steps[activeStepIndex].completed = true;
+        
+        const completedSteps = goal.steps.filter(s => s.completed).length;
+        goal.progress = Math.round((completedSteps / goal.steps.length) * 100);
+        
+        if (goal.progress === 100) {
+            goal.status = 'completed';
+            showCelebration(`¡Felicidades! Has completado "${goal.title}" 🎉`);
+            createConfetti();
+        } else if (goal.progress > 0) {
+            goal.status = 'active';
+        }
+        
+        saveData();
+        selectGoal(goal.id);
+        renderGoalList();
+        renderMap();
+        renderStats();
+    }
+}
+
+function deleteGoal() {
+    if (!userData.selectedGoal) return;
+    
+    if (confirm('¿Estás seguro de eliminar este destino de tu mapa?')) {
+        userData.goals = userData.goals.filter(g => g.id !== userData.selectedGoal.id);
+        saveData();
+        document.getElementById('goalDetailSection').style.display = 'none';
+        selectedGoalId = null;
+        userData.selectedGoal = null;
+        renderGoalList();
+        renderMap();
+        renderStats();
+    }
+}
+
+function renderStats() {
+    const total = userData.goals.length;
+    const completed = userData.goals.filter(g => g.status === 'completed').length;
+    const active = userData.goals.filter(g => g.status === 'active').length;
+    const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+    
+    document.getElementById('totalGoals').textContent = total;
+    document.getElementById('completedGoals').textContent = completed;
+    document.getElementById('activeGoals').textContent = active;
+    document.getElementById('progressPercentage').textContent = `${percentage}%`;
+}
+
+function saveData() {
+    localStorage.setItem('resilienceData', JSON.stringify(userData));
+}
+
+function editProfile() {
+    const newName = prompt('Ingresa tu nuevo nombre:', userData.name);
+    if (newName) {
+        userData.name = newName;
+        saveData();
+        updateUserInfo();
+    }
+}
+
+function showCelebration(message) {
+    document.getElementById('celebrationText').textContent = message;
+    document.getElementById('celebrationModal').classList.add('active');
+}
+
+function closeCelebration() {
+    document.getElementById('celebrationModal').classList.remove('active');
+}
+
+function createConfetti() {
+    const colors = ['#8B5CF6', '#10B981', '#F59E0B', '#EF4444', '#6366f1'];
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 4000);
+    }
+}
+
+function zoomIn() {
+    mapZoom = Math.min(mapZoom + 0.2, 2);
+    document.getElementById('mapCanvas').style.transform = `scale(${mapZoom})`;
+}
+
+function zoomOut() {
+    mapZoom = Math.max(mapZoom - 0.2, 0.6);
+    document.getElementById('mapCanvas').style.transform = `scale(${mapZoom})`;
+}
+
+function resetMap() {
+    mapZoom = 1;
+    document.getElementById('mapCanvas').style.transform = `scale(1)`;
+}
+
+// Reset App Function
+function resetApp() {
+    if(confirm('¿Resetear toda la aplicación? Se borrarán tus datos guardados.')) {
+        localStorage.removeItem('resilienceData');
+        location.reload();
+    }
+}
+
+// ==================== INIT ====================
+window.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 RESILENCE App Iniciando...');
+    
+    try {
+        const savedData = localStorage.getItem('resilienceData');
+        
+        if (savedData) {
+            console.log('✅ Datos cargados desde localStorage');
+            userData = JSON.parse(savedData);
+            document.getElementById('onboardingScreen').classList.add('hidden');
+            document.getElementById('appContainer').classList.add('active');
+            initializeApp();
+        } else {
+            console.log('📋 Mostrando pantalla de onboarding');
+        }
+    } catch (error) {
+        console.error('❌ Error al inicializar:', error);
+        alert('Error al cargar la aplicación. Revisa la consola (F12)');
+    }
+});
+</script>
+</body>
+</html>
